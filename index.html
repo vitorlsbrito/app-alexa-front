@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+        <title>Alta - Skill Alexa</title>
+
+        <style>
+            * { padding: 0; margin: 0; outline: none; }
+            html, body { color: #FFF; font-family: 'Open Sans', sans-serif; font-size:15px; height: 100%; }
+
+            body { background: linear-gradient(#4bb6cd, #2c8ba0); display: flex; }
+
+            div#root { display: flex; flex: 1; flex-direction: column; }
+            
+            header { width: 100%; padding: 20px 0; display: flex; justify-content: center; margin-bottom: 30px; }
+            header img { width: 125px; height: auto; }
+
+            div.wrap { width: 100%; margin: 0 auto; box-sizing: border-box; display: flex; flex-direction: column; }
+
+            div.wrap div.form { padding: 20px 30px; margin-bottom: 20px; display: flex; flex-direction: column; justify-content: center; flex: 1; }
+            div.wrap div.form h2 { font-size: 17px; margin-bottom: 20px; }
+            div.wrap div.form input { background: #FFF; color: #666; font-size: 14px; font-weight: bold; padding: 15px 15px; margin-bottom: 15px; border: solid 2px #CCC; border-radius: 5px; box-sizing: border-box; }
+            div.wrap div.form div.button-line { margin-top: 10px; display: flex; justify-content: flex-end; }
+            div.wrap div.form div.button-line button { background: none; color: #FFF; font-weight: bold; padding: 12px 30px; border: solid 1px #FFF; border-radius: 5px; cursor: pointer; }
+            div.wrap div.form p.api-message { font-weight: bold; text-align: center; }
+
+            div.wrap div.echo { display: flex; justify-content: center; flex: 1; position: relative; }
+            div.wrap div.echo img { height: 100%; width: auto; }
+
+            div.wrap div.echo div.echo-say { background: #FFF; color: #333; font-family: 'Newsreader', serif; font-weight: bold; font-style: italic; text-align: center; line-height: 18px; width: 50%; max-width: 250px; padding: 20px; border: solid 1px #999; border-radius: 5px; box-sizing: border-box; box-shadow: rgba(0, 0, 0, 0.2) 2px 4px 2px; position: absolute; top: 0; left: 25%; animation-duration: 2s; animation-iteration-count: infinite; transform-origin: bottom; animation-name: bounce; animation-timing-function: ease; }
+            @keyframes bounce {
+                0%   { transform: translateY(0); }
+                50%  { transform: translateY(-3px); }
+                100% { transform: translateY(0); }
+            }
+            div.wrap div.echo div.echo-say::after { content: ' '; width: 0; height: 0; margin-right: -7px; border-style: solid; border-width: 15px 15px 0 15px; border-color: #FFF transparent transparent transparent; position: absolute; bottom: -14px; right: 50%; }
+
+            @media screen and (min-width: 500px) {
+                div.wrap { max-width: 960px; flex-direction: row; }
+                div.wrap div.form * { max-width: 300px; }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="root">
+            <header>
+                <img src="https://d9hhrg4mnvzow.cloudfront.net/agende.altadiagnosticos.com.br/f58bf91c-logo-white_1000000000000000000028.png" />
+            </header>
+
+            <div class="wrap">
+                <div class="form">
+                    <h2>Víncule sua conta Amazon ao seu CPF</h2>
+
+                    <input type="text" name="pac_cpf" id="pac_cpf" placeholder="CPF" />
+                    <input type="text" name="pac_email" id="pac_email" placeholder="E-mail" />
+
+                    <div class="button-line">
+                        <button id="btnSend">Víncular</button>
+                    </div>
+                </div>
+
+                <div class="echo">
+                    <div class="echo-say">
+                        Alexa, quando é o meu próximo exame no Alta?
+                    </div>
+
+                    <img src="https://conteudo.imguol.com.br/c/noticias/5e/2020/09/24/amazon-echo-2020-1600973477197_v2_450x337.png" />
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script src="https://unpkg.com/imask"></script>
+
+    <script>
+        var cpf = document.getElementById('pac_cpf');
+        var maskOptions = {
+            mask: '000.000.000-00'
+        };
+        var mask = IMask(cpf, maskOptions);
+
+        document.getElementById('btnSend').addEventListener('click', function () {
+            console.log('Button clicked');
+
+            let flag = 0;
+            const regexMail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            const regexCPF = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/
+            const cpf = document.getElementById('pac_cpf');
+            const email = document.getElementById('pac_email');
+
+            if (!regexCPF.test(cpf.value)) { cpf.style.color = '#D90000'; cpf.style.borderColor = '#D90000'; flag = 1; }
+            else { cpf.style.color = '#333333'; cpf.style.borderColor = '#CCCCCC'; }
+
+            if (!regexMail.test(email.value)) { email.style.color = '#D90000'; email.style.borderColor = '#D90000'; flag = 1; }
+            else { email.style.color = '#333333'; email.style.borderColor = '#CCCCCC'; }
+
+            if (flag == 0) {
+                var jsonData = { pac_cpf: cpf.value.replaceAll('-', '').replaceAll('.', ''), pac_email: email.value };
+                var formattedJsonData = JSON.stringify(jsonData);
+
+                var xhr = new XMLHttpRequest();
+                xhr.onload = function () {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        document.querySelector('#root > div > div.form').innerHTML = '<p class="api-message">Conta vínculada com sucesso!</p>';
+                    } else {
+                        document.querySelector('#root > div > div.form').innerHTML = '<p class="api-message">Falha ao víncular a conta, tente novamente mais tarde.</p>';
+                    }
+                };
+
+                xhr.open('POST', 'https://alexa-app-alta.herokuapp.com/subscribers');
+                xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+                xhr.send(formattedJsonData);
+            }
+        });
+    </script>
+</html>
